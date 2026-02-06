@@ -5,7 +5,7 @@ import cors from "cors";
 import OpenAI from "openai";   // <-- import OpenAI here
 
 const app = express();
-const PORT = 3001;
+const PORT = Number(process.env.PORT) || 8080;
 
 // Middleware
 app.use(cors());
@@ -41,4 +41,4 @@ app.post("/chat", async (req, res) => {
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok", app: "ChefGPT" }));
 
-app.listen(PORT, () => console.log(`ChefGPT running on http://localhost:${PORT}`));
+app.listen(PORT, "0.0.0.0", () => console.log(`ChefGPT running on http://0.0.0.0:${PORT}`));
