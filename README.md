@@ -69,3 +69,19 @@ npm install
 npm run dev
 
 or simply open index.html
+
+
+## ▲ Deploy Frontend on Vercel
+
+This repo now includes a root `vercel.json` that:
+
+- serves `chefgpt-frontend/index.html` for all frontend routes
+- proxies `/api/*` requests to `https://chefgpt-backend.fly.dev/*`
+
+### Steps
+
+1. Import this repository in Vercel.
+2. Keep the **Root Directory** as the repository root (`/`).
+3. Deploy.
+
+After deploy, the frontend will call `/api/chat` on the same Vercel domain and Vercel will forward it to Fly.io.
