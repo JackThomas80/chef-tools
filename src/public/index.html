@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>ChefGPT 👨‍🍳</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="api-base" content="" />
 
   <!-- React (no build tools needed) -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -149,6 +150,12 @@
       const [input, setInput] = useState("");
       const [loading, setLoading] = useState(false);
 
+      const apiBase =
+        window.CHEFGPT_API_BASE ||
+        document.querySelector('meta[name="api-base"]')?.content ||
+        "";
+      const chatUrl = apiBase ? new URL("/chat", apiBase).toString() : "/chat";
+
       async function sendMessage() {
         if (!input.trim()) return;
 
@@ -158,7 +165,7 @@
         setLoading(true);
 
         try {
-          const res = await fetch("http://localhost:3001/chat", {
+          const res = await fetch(chatUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: input })
