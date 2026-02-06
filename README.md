@@ -4,7 +4,7 @@ ChefGPT is an AI-powered culinary assistant — your Michelin-minded digital sou
 Ask about dishes, ingredients, techniques, substitutions, menus, or food science and get thoughtful, chef-level responses.
 
 Frontend is a lightweight React app.  
-Backend is a Node.js + TypeScript API deployed on Fly.io.
+Backend is a Node.js + TypeScript Express server deployed on Vercel.
 
 ---
 
@@ -13,7 +13,7 @@ Backend is a Node.js + TypeScript API deployed on Fly.io.
 - 👨‍🍳 AI culinary assistant powered by OpenAI
 - 🧠 Knowledge of techniques, flavor pairings, substitutions, and plating
 - ⚡ Simple REST API
-- 🌍 Fly.io backend + static frontend
+- 🌍 Vercel-hosted Express backend + static frontend
 - 🔐 Secure API key handling (no secrets in GitHub)
 
 ---
@@ -27,8 +27,7 @@ ChefGPT/
 │ ├── dist/
 │ ├── package.json
 │ ├── tsconfig.json
-│ ├── Dockerfile
-│ └── fly.toml
+│ └── vercel.json
 │
 └── chefgpt-frontend/
 └── index.html
@@ -38,10 +37,9 @@ ChefGPT/
 
 ## 🚀 Live Deployment
 
-- Backend: Fly.io
-- Frontend: Static HTML (Netlify or similar)
+- Backend + Frontend: Vercel
 
-DNS propagation on Fly.io may take a few minutes after deploy.
+Deployments are available immediately after a successful Vercel build.
 
 ---
 
