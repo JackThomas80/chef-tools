@@ -49,7 +49,7 @@ DNS propagation on Fly.io may take a few minutes after deploy.
 
 ### Install dependencies
 ```bash
-git clone https://github.com/JackThomas80/ChefGPT.git
+git clone https://github.com/JackThomas80/chef-tools.git
 cd ChefGPT
 cd chefgpt-backend
 npm install
