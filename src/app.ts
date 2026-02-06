@@ -1,23 +1,25 @@
-import "dotenv/config";       // load .env variables
-import express from "express";
+import "dotenv/config";
 import cors from "cors";
-// import { prisma } from "./db"; // optional if you don’t use Prisma
-import OpenAI from "openai";   // <-- import OpenAI here
+import express from "express";
+import OpenAI from "openai";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
-// Middleware
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const staticDir = path.resolve(__dirname, "../src/public");
+
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(staticDir));
 
-// Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // <-- your key from .env
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Example chat route using OpenAI
 app.post("/chat", async (req, res) => {
   const { message } = req.body;
 
@@ -38,7 +40,10 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-// Health check
-app.get("/health", (req, res) => res.json({ status: "ok", app: "ChefGPT" }));
+app.get("/health", (_req, res) => res.json({ status: "ok", app: "ChefGPT" }));
 
-app.listen(PORT, () => console.log(`ChefGPT running on http://localhost:${PORT}`));
+if (process.env.VERCEL !== "1") {
+  app.listen(PORT, () => console.log(`ChefGPT running on http://localhost:${PORT}`));
+}
+
+export default app;
