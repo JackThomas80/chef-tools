@@ -5,37 +5,35 @@
   <title>ChefGPT 👨‍🍳</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- React (no build tools needed) -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
   <style>
     body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #f5f5f5;
-}
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #f5f5f5;
+    }
 
     .page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center; /* horizontal center only */
-}
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
 
     .app {
-  width: 100%;
-  max-width: 720px;
-  background: #111;
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  margin: 24px 0; /* vertical breathing room */
-}
-
+      width: 100%;
+      max-width: 720px;
+      background: #111;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      margin: 24px 0;
+    }
 
     header {
       padding: 20px;
@@ -135,9 +133,11 @@
   <div class="page">
     <div id="root"></div>
   </div>
-</body>
+
   <script type="text/babel">
     const { useState } = React;
+
+    const API_BASE_URL = window.__CHEFGPT_API_BASE__ || "";
 
     function App() {
       const [messages, setMessages] = useState([
@@ -150,7 +150,7 @@
       const [loading, setLoading] = useState(false);
 
       async function sendMessage() {
-        if (!input.trim()) return;
+        if (!input.trim() || loading) return;
 
         const userMessage = { role: "user", text: input };
         setMessages(prev => [...prev, userMessage]);
@@ -158,18 +158,21 @@
         setLoading(true);
 
         try {
-          const res = await fetch("https://chefgpt-backend.fly.dev/chat", {
-
+          const res = await fetch(`${API_BASE_URL}/api/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: input })
           });
 
+          if (!res.ok) {
+            throw new Error(`Request failed with status ${res.status}`);
+          }
+
           const data = await res.json();
 
           const botMessage = {
             role: "bot",
-            text: data.reply,
+            text: data.reply || "🤖 ChefGPT: I didn't get that.",
             recipes: data.recipes || []
           };
 
@@ -179,9 +182,9 @@
             ...prev,
             { role: "bot", text: "🔥 The kitchen caught fire. Try again." }
           ]);
+        } finally {
+          setLoading(false);
         }
-
-        setLoading(false);
       }
 
       return (
