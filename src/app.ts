@@ -5,7 +5,7 @@ import cors from "cors";
 import OpenAI from "openai";   // <-- import OpenAI here
 
 const app = express();
-const PORT = 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
 // Middleware
 app.use(cors());
@@ -19,7 +19,15 @@ const openai = new OpenAI({
 
 // Example chat route using OpenAI
 app.post("/chat", async (req, res) => {
-  const { message } = req.body;
+  const { message } = req.body as { message?: string };
+
+  if (!message || !message.trim()) {
+    return res.status(400).json({ reply: "Please send a message to ChefGPT." });
+  }
+
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(500).json({ reply: "Server is missing OPENAI_API_KEY." });
+  }
 
   try {
     const response = await openai.chat.completions.create({
@@ -33,7 +41,7 @@ app.post("/chat", async (req, res) => {
     const reply = response.choices[0].message?.content || "🤖 ChefGPT: I didn't get that.";
     res.json({ reply });
   } catch (err) {
-    console.error(err);
+    console.error("/chat error", err);
     res.status(500).json({ reply: "🔥 ChefGPT burned the kitchen! Try again." });
   }
 });
